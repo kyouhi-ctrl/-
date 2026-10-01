@@ -11,7 +11,7 @@ DUR=$(python3 -c "import json;print(json.load(open('build/timeline.json'))['dura
 # 1) 高清版：1080p，2.39:1 画面在 16:9 画布内（字幕在下方黑边），H.265 Main10
 ffmpeg -y -hide_banner -loglevel warning -stats -f concat -safe 0 -i out/chunks.txt -i audio/mix.wav \
   -map 0:v -map 1:a -t "$DUR" \
-  -c:v libx265 -preset slow -crf "${CRF:-21}" -pix_fmt yuv420p10le -tag:v hvc1 \
+  -c:v libx265 -preset slow -crf "${CRF:-20}" -pix_fmt yuv420p10le -tag:v hvc1 \
   -x265-params "aq-mode=3:psy-rd=1.6:psy-rdoq=1.0:deblock=-1,-1:log-level=error" \
   -color_primaries bt709 -color_trc bt709 -colorspace bt709 \
   -c:a aac -b:a 256k -ar 48000 -movflags +faststart \
