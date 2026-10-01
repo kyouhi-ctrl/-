@@ -39,7 +39,7 @@ const browser = await chromium.launch({
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.log('[page]', m.type(), m.text().slice(0, 300)); });
 page.on('pageerror', (e) => { console.log('[pageerror]', e.message); });
-await page.goto(`http://localhost:${PORT}/src/index.html`);
+await page.goto(`http://localhost:${PORT}/src/index.html?msaa=${args.msaa ?? 4}`);
 await page.waitForFunction(() => window.READY === true, null, { timeout: 120000 });
 const cdp = await page.context().newCDPSession(page);
 const meta = await page.evaluate(() => ({ frames: window.FILM.frames, fps: window.FILM.fps, duration: window.FILM.duration }));

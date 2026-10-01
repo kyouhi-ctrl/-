@@ -8,6 +8,8 @@ import { smooth } from './engine/util.js';
 import { SCENES } from './scenes/index.js';
 
 const W = 1920, H = 804;
+const QS = new URLSearchParams(location.search);
+const MSAA = Number(QS.get('msaa') ?? 4);
 const TL = await (await fetch('/build/timeline.json?' + Date.now())).json();
 const FPS = TL.fps;
 
@@ -35,7 +37,7 @@ const comp = new Compositor(renderer, W, H);
 const subCtx = document.getElementById('sub').getContext('2d');
 
 function makeSlot() {
-  const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 4 });
+  const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: MSAA });
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
   const ctx = cv.getContext('2d');
   const tex = new THREE.CanvasTexture(cv);
