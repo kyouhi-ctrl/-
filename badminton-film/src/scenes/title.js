@@ -76,6 +76,7 @@ export function goldGlyphMaterial(tex, height) {
         vec2 vUv = 0.5 + (vUv0 - 0.5) / zoom;
         vec2 px = 3.0 / res;
         float a = texture2D(glyph, vUv).a;
+        if (a < 0.003) discard;                      // 无字处直接跳过，省去昂贵的噪声计算
         float ax = texture2D(hmap, vUv + vec2(px.x, 0.0)).a - texture2D(hmap, vUv - vec2(px.x, 0.0)).a;
         float ay = texture2D(hmap, vUv + vec2(0.0, px.y)).a - texture2D(hmap, vUv - vec2(0.0, px.y)).a;
         vec2 q = vUv * vec2(res.x / res.y, 1.0);

@@ -120,7 +120,13 @@ export class Poona extends BaseScene {
       uniforms: { reveal: { value: 0 }, time: { value: 0 } },
       vertexShader: `varying vec2 vUv; varying vec3 vP; void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position,1.0); vP = wp.xyz; gl_Position = projectionMatrix * viewMatrix * wp; }`,
       fragmentShader: /* glsl */ `uniform float reveal, time; varying vec2 vUv; varying vec3 vP;
-        float grid(vec2 p, float w){ vec2 f = abs(fract(p) - 0.5); vec2 aa = fwidth(p) * 1.2; vec2 l = smoothstep(0.5 - w - aa, 0.5 - w + aa, f); return max(l.x, l.y); }
+        float grid(vec2 p, float w){
+          vec2 fw = fwidth(p);
+          vec2 f = abs(fract(p) - 0.5); vec2 aa = fw * 1.2; vec2 l = smoothstep(0.5 - w - aa, 0.5 - w + aa, f);
+          float g = max(l.x, l.y);
+          float avg = 1.0 - (1.0 - 2.0 * w) * (1.0 - 2.0 * w);          // 网格的平均覆盖率
+          return mix(g, avg, smoothstep(0.25, 0.6, max(fw.x, fw.y)));   // 网格小于像素时淡化成均匀值，避免摩尔纹
+        }
         void main(){
           vec2 cells = vec2(6.7, 0.76) / 0.019;
           float g = grid(vUv * cells, 0.07);

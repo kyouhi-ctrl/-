@@ -311,7 +311,8 @@
   "credits": [
     {
       "role": "解说配音",
-      "name": "MiniMax Speech 2.8 HD"
+      "name": "MiniMax Speech 2.8 HD",
+      "requiresVO": true
     },
     {
       "role": "画面 · 配乐 · 剪辑",

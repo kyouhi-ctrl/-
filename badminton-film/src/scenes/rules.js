@@ -94,7 +94,8 @@ export class Rules extends BaseScene {
     this.netB = new THREE.Mesh(new THREE.PlaneGeometry(6.1, 0.76), new THREE.ShaderMaterial({
       uniforms: { a: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-      fragmentShader: `uniform float a; varying vec2 vUv; void main(){ vec2 g = abs(fract(vUv * vec2(160.0, 20.0)) - 0.5); float l = step(0.4, max(g.x, g.y)); float tape = step(0.9, vUv.y);
+      fragmentShader: `uniform float a; varying vec2 vUv; void main(){ vec2 p = vUv * vec2(160.0, 20.0); vec2 fw = fwidth(p); vec2 g = abs(fract(p) - 0.5);
+        vec2 ll = smoothstep(0.4 - fw * 1.2, 0.4 + fw * 1.2, g); float l = mix(max(ll.x, ll.y), 0.36, smoothstep(0.25, 0.6, max(fw.x, fw.y))); float tape = step(0.9, vUv.y);
         float al = max(l * 0.5, tape) * a; if (al < 0.01) discard; gl_FragColor = vec4(vec3(2.0, 1.7, 1.3) * max(l, tape), al); }`,
       transparent: true, side: THREE.DoubleSide, depthWrite: false,
     }));
@@ -233,6 +234,8 @@ export class Rules extends BaseScene {
       revealText(ctx, '1899', 150, 120, seg(t, c12a - 0.2, c12a + 1.0, ease.linear), { font: '400 92px Cinzel', color: '#f2dcb0', align: 'left', tracking: 14, stagger: 0.15, blurMax: 10 });
       revealText(ctx, '首届全英锦标赛 · 伦敦', 156, 196, seg(t, c12a + 0.4, c12a + 1.8, ease.linear), { font: '500 26px NotoSerifSC', color: '#ead6b4', align: 'left', tracking: 8, stagger: 0.06 });
       revealText(ctx, 'ALL ENGLAND CHAMPIONSHIPS  ·  LONDON', 158, 238, seg(t, c12a + 0.8, c12a + 2.2, ease.linear), { font: '400 17px Cinzel', color: '#d6bd90', align: 'left', tracking: 6, stagger: 0.015 });
+      const bk = seg(t, c12b, c12b + 0.8, ease.linear);
+      if (bk > 0) { const bg = ctx.createLinearGradient(0, 600, 0, 804); bg.addColorStop(0, 'rgba(0,0,0,0)'); bg.addColorStop(0.45, `rgba(0,0,0,${0.62 * bk})`); bg.addColorStop(1, `rgba(0,0,0,${0.75 * bk})`); ctx.fillStyle = bg; ctx.fillRect(0, 600, 1920, 204); }
       revealText(ctx, '世界上最古老的羽毛球赛事', 960, 700, seg(t, c12b + 0.3, c12b + 1.8, ease.linear), { font: '500 30px NotoSerifSC', color: '#f0dcb0', tracking: 12, stagger: 0.06 });
       revealText(ctx, "THE WORLD'S OLDEST BADMINTON TOURNAMENT", 960, 744, seg(t, c12b + 0.8, c12b + 2.4, ease.linear), { font: '400 16px Cinzel', color: '#cdb38a', tracking: 7, stagger: 0.01 });
     }

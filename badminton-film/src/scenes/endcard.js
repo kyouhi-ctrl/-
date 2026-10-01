@@ -11,7 +11,7 @@ export class Endcard extends BaseScene {
     this.ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     this.embers = createEmbers({ count: 160, area: [2300, 1000], seed: 9 });
     this.scene.add(this.embers);
-    this.credits = eng.TL.credits || [];
+    this.credits = (eng.TL.credits || []).filter((c) => !c.requiresVO || eng.TL.voReal);
   }
   render(info, rt, ctx) {
     const t = info.t, D = info.dur;
