@@ -519,6 +519,14 @@ for i in range(16):  # 羽毛就位的轻响
     tk = v2 - 0.2 + 0.55 + 1.05 + (i - 1) * 0.105 if i > 0 else v2 - 0.2 + 1.9
     tick(tk, 0.18, 1800 + 120 * i, pan=np.sin(i) * 0.5)
 heartbeat(v4a + 0.2, 0.9); heartbeat(v4a + 1.25, 0.9)
+# v03 的两次闪回（水墨毽子 / 铜版画木拍）
+v3e = cue('coldopen', 'v03', 1)
+for k, (frac, kind) in enumerate([(0.30, 'kick'), (0.68, 'tock')]):
+    tf = v3 + (v3e - v3) * frac
+    reverse_swell(tf, 0.6, 0.22); whoosh(tf - 0.12, 0.45, True, 0.22, pan=-0.4 if k == 0 else 0.4)
+    shimmer(tf, tf + 0.7, 0.04, 22)
+    if kind == 'kick': soft_thud(tf + 0.15, 0.35, 120)
+    else: tick(tf + 0.1, 0.35, 1300, 0.3); soft_thud(tf + 0.1, 0.18, 220)
 hum(v4a - 0.2, strike, 0.035, flicker=lambda tt_: 0.3 + 0.7 * (np.sin(tt_ * 31) > 0.3))
 riser(v4b + 0.6, strike - 0.02, 0.55)
 reverse_swell(strike - 0.02, 2.4, 0.45)

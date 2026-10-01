@@ -81,8 +81,41 @@ export class ColdOpen extends BaseScene {
     return { pos: new THREE.Vector3(x, y + CENTER_Y, z), quat: q };
   }
 
+  // v03 “在孩童的脚尖跳跃，在贵族的花园里飞舞”时，闪回两个未来的画面
+  flashback(info, T, rt, ctx) {
+    const t = info.t;
+    const span = T.v3e - T.v3s;
+    const shots = [
+      { id: 'origins', t0: T.v3s + span * 0.30, d: 0.95, at: 1.15 },
+      { id: 'europe', t0: T.v3s + span * 0.68, d: 0.95, at: 0.05 },
+    ];
+    for (const sh of shots) {
+      if (t < sh.t0 || t >= sh.t0 + sh.d) continue;
+      this.subs ||= {};
+      if (!this.subs[sh.id]) {
+        const def = this.eng.TL.scenes.find((s) => s.id === sh.id);
+        this.subs[sh.id] = { inst: new this.eng.SCENES[sh.id](this.eng, def), def };
+      }
+      const S = this.subs[sh.id];
+      const lt = sh.at + (t - sh.t0);
+      const fake = { t: lt, dur: S.def.dur, p: lt / S.def.dur, id: sh.id, global: info.global, cues: S.def.cues, cue: (c, w = 0, f = 0) => (S.def.cues[c] ? S.def.cues[c][w] : f) };
+      const res = S.inst.render(fake, rt, ctx) || {};
+      const k = (t - sh.t0) / sh.d;
+      const g = { ...(res.grade || {}) };
+      g.flash = Math.max(g.flash || 0, Math.exp(-k * 18) * 0.7, Math.max(0, (k - 0.82) / 0.18) * 0.6);
+      g.vignette = 0.7;
+      return { overlay: res.overlay, overlayGain: res.overlayGain, grade: g };
+    }
+    if (this.subs && t > T.v3e + 0.5) { for (const k of Object.keys(this.subs)) this.subs[k].inst.dispose?.(); this.subs = null; }
+    return null;
+  }
+
+  dispose() { if (this.subs) for (const k of Object.keys(this.subs)) this.subs[k].inst.dispose?.(); super.dispose(); }
+
   render(info, rt, ctx) {
     const t = info.t, T = this.times(info), cam = this.camera;
+    const fb = this.flashback(info, T, rt, ctx);
+    if (fb) return fb;
     const L = this.L;
     // ---------------- 光线 ----------------
     let beamOn = smooth(0.4, 2.8, t) * (0.92 + 0.08 * Math.sin(t * 0.7));
@@ -166,10 +199,10 @@ export class ColdOpen extends BaseScene {
     const hpC = hp.pos.clone().add(new THREE.Vector3(0, 3.2, 0).applyQuaternion(hp.quat));
     const camA = { pos: hpC.clone().add(new THREE.Vector3(-1.2, 0.5, 14.5)), tgt: hpC };
     const k1 = seg(t, T.asm - 0.3, T.asm + 2.6, ease.inOutCubic);
-    const orbit = 0.55 * smooth(T.v3s - 0.5, T.v4as + 1.0, t) * invLerp(T.v3s - 0.5, T.v4as + 1.0, t);
+    const orbit = 1.25 * ease.inOutSine(invLerp(T.v3s - 1.0, T.v4bs + 1.5, t));
     const push = seg(t, T.v4as, ts, ease.inOutSine);
     const R = lerp(lerp(33, 31, hover), 23, push);
-    const camH = lerp(lerp(2.0, 3.0, hover), CENTER_Y + 0.2, push);
+    const camH = lerp(lerp(2.0, 3.0 + 3.5 * Math.sin(Math.PI * invLerp(T.v3s, T.v4as + 0.5, t)), hover), CENTER_Y + 0.2, push);
     const camB = { pos: new THREE.Vector3(Math.sin(orbit) * R, camH, Math.cos(orbit) * R), tgt: new THREE.Vector3(0, CENTER_Y + 0.1, 0) };
     const pos = camA.pos.clone().lerp(camB.pos, k1);
     const tgt = camA.tgt.clone().lerp(camB.tgt, k1);

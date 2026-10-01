@@ -185,8 +185,8 @@ export class Manor extends BaseScene {
     for (const m of this.stoneMats) m.uniforms.time.value = t;
     const cam = this.camera;
     const k = seg(t, 0, D, ease.inOutSine);
-    cam.position.set(lerp(-14, 6, k) + fbm1(t * 0.2, 1) * 0.3, lerp(4.0, 6.5, k), lerp(150, 92, k));
-    cam.lookAt(lerp(-4, 1, k), lerp(17, 18.5, k), 0);
+    cam.position.set(lerp(-18, 6, k) + fbm1(t * 0.2, 1) * 0.3, lerp(1.6, 8.0, k), lerp(185, 90, k));
+    cam.lookAt(lerp(-6, 1, k), lerp(20.5, 18.5, k), 0);
     const lu = this.lights.material.uniforms;
     lu.time.value = t; lu.focus.value = cam.position.z - 5; lu.pxScale.value = (this.H / 2) / Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
     const gu = this.gold.material.uniforms;

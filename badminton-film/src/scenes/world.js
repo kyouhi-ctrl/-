@@ -166,9 +166,9 @@ export class World extends BaseScene {
     const c13 = info.cue('v13'), c14a = info.cue('v14a'), c14b = info.cue('v14b'), c15 = info.cue('v15'), c15e = info.cue('v15', 1);
     this.stars.material.uniforms.time.value = t;
     // 镜头：经纬度关键帧（欧洲 → 马来亚 → 太平洋 → 美国 → 回到亚洲）
-    const lat = keyframes(t, [[0, 42], [c13 + 2.5, 30], [c14a - 0.6, 30], [c14a + 1.2, 12], [c14b - 0.4, 12], [c14b + 1.2, 30], [c15 - 0.3, 30], [c15 + 1.6, 22], [D, 20]], ease.inOutCubic);
-    const lon = keyframes(t, [[0, 2], [c13 + 3.5, -25], [c14a - 0.6, -25], [c14a + 1.2, 100], [c14b - 0.4, 108], [c14b + 1.2, 262], [c15 - 0.3, 262], [c15 + 1.8, 108], [D, 102]], ease.inOutCubic);
-    const dist = keyframes(t, [[0, 40], [c13 + 3.0, 60], [c14a - 0.6, 62], [c14a + 1.0, 50], [c14b + 1.2, 54], [c15, 56], [c15 + 1.8, 50], [D, 48]], ease.inOutCubic);
+    const lat = keyframes(t, [[0, 46], [c13 + 2.2, 44], [c13 + 4.4, 30], [c14a - 0.6, 30], [c14a + 1.2, 12], [c14b - 0.4, 12], [c14b + 1.2, 30], [c15 - 0.3, 30], [c15 + 1.6, 22], [D, 20]], ease.inOutCubic);
+    const lon = keyframes(t, [[0, 6], [c13 + 2.2, 2], [c13 + 4.6, -25], [c14a - 0.6, -25], [c14a + 1.2, 100], [c14b - 0.4, 108], [c14b + 1.2, 262], [c15 - 0.3, 262], [c15 + 1.8, 108], [D, 102]], ease.inOutCubic);
+    const dist = keyframes(t, [[0, 36], [c13 + 2.2, 31], [c13 + 4.4, 58], [c14a - 0.6, 62], [c14a + 1.0, 50], [c14b + 1.2, 54], [c15, 56], [c15 + 1.8, 50], [D, 48]], ease.inOutCubic);
     const cam = this.camera;
     cam.position.copy(ll(lat, lon, dist));
     const right = new THREE.Vector3().crossVectors(cam.position.clone().normalize(), new THREE.Vector3(0, 1, 0)).normalize();
